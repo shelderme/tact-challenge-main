@@ -15,19 +15,50 @@ import "@stdlib/deploy";
 
 message(0x44) Refund {
   queryId: Int as uint64;
+  tonAmount: Int as uint32;
   sender: Address;
 }
 
-contract Task2 with Deployable {
-  admin: Address;
 
+contract TaskeTwo with Deployable {
+  admin: Address;
+  
   init(admin: Address) {
     self.admin = admin;
   }
+  fun OnlyOwner() {
+    require(sender() == self.admin, "only owner is allowed");
+    }
+  receive(){
+    //accept incoming TON transeferes
+    
+
+    if (myBalance() > 0) {
+        send(SendParameters {
+            to: self.admin,
+            value: 0,
+            bounce: true,
+            mode: SendRemainingBalance + SendIgnoreErrors
+
+        });
+    }
+  }
   
   receive(msg: Refund) {
+    self.OnlyOwner();
+    send(SendParameters {
+            to: msg.sender,
+            value: msg.tonAmount,
+            bounce: true,
+            mode: SendIgnoreErrors
+        });
+
   }
 
   receive(msg: Slice) {
+  }
+
+  get fun balance(): Int {
+    return myBalance();
   }
 }
