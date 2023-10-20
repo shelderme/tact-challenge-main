@@ -33,7 +33,7 @@ contract TaskeTwo with Deployable {
     //accept incoming TON transeferes
     
 
-    if (myBalance() > 0) {
+    if (myBalance() > 0.01) {
         send(SendParameters {
             to: self.admin,
             value: 0,
